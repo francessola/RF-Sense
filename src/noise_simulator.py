@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import rfft, rfftfreq
+from interference_detector import detect_peaks, classify_frequency
 #  scipy.signal import find_peaks
 
 # Signal parameters
@@ -57,13 +58,17 @@ frequencies = rfftfreq(len(noisy_signal), 1 /sample_rate)
 # Calculate amplitude spectrum
 amplitudes = 2 * np.abs(fft_values) / len(noisy_signal)
 
-# Detect peaks above the threshold
-threshold = 0.5
-peaks = np.where (
-    (amplitudes[1:-1] > amplitudes[:-2]) &
-    (amplitudes[1:-1] > amplitudes[2:]) &
-    (amplitudes[1:-1] >= threshold)
-)[0] + 1
+# Estimate the noise floor
+noise_floor = np.median(amplitudes[1:])
+
+# Calculate adaptive threshold
+threshold_multiplier = 5
+threshold = threshold_multiplier * noise_floor
+
+print(f"\nEstimated Noise Floor: {noise_floor:.4f}")
+print(f"Adaptive Threshold: {threshold:.4f}")
+
+peaks = detect_peaks(amplitudes, threshold)
 
 # Display detected frequencies
 print("\nDetected Frequency Peaks: ")
@@ -80,10 +85,8 @@ print("\nSignal Classification: ")
 for peak in peaks:
     detected_frequency = frequencies[peak]
 
-    if abs(detected_frequency - expected_frequency) <= tolerance:
-        print(f"{detected_frequency:.2f} Hz | Expected Signal")
-    else:
-        print(f"{detected_frequency:.2f} Hz | Possible Interference")
+    classification = classify_frequency(detected_frequency, expected_frequency, tolerance)
+    print(f"{detected_frequency:.2f} Hz | {classification}")
 
 # Plot frequency spectrum
 plt.figure(figsize=(10,6))
