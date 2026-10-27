@@ -87,7 +87,7 @@ RF-Sense/
 `-- .gitignore
 ```
 
-### Getting Started
+## Getting Started
 
 
 ### Installation
