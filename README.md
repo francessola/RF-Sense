@@ -1,6 +1,6 @@
 # RF-Sense
 
-**Simulated-Based RF Signal Analysis & Interference Detection**
+**Simulation-Based RF Signal Analysis & Interference Detection**
 
 RF-Sense is a Python-based project designed to simulate, analyze, and detect potential interference in synthetic radio-frequency (RF) signals.
 
