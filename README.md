@@ -1,6 +1,6 @@
 # RF-Sense
 
-**RF Signal Analysis & Interference Detection Platform**
+**Simulated-Based RF Signal Analysis & Interference Detection**
 
 RF-Sense is a Python-based project designed to simulate, analyze, and detect potential interference in synthetic radio-frequency (RF) signals.
 
@@ -20,11 +20,13 @@ The project explores digital signal processing (DSP), frequency-domain analysis,
 
 ## Technologies
 
-- **Python** - Core development language
-- **NumPy** - Numerical computations and signal generation
-- **Scipy FFT** - Frequency-domain analysis
-- **Matplotlib** - Signal and spectrum visualization
-- **Git & GitHub** - Version control
+- **Python** - Core programming language and application logic
+- **NumPy** - Numerical computations, signal generation, and noise simulation
+- **SciPy FFT** - Frequency-domain signal analysis
+- **Matplotlib** - Time-domain, FFT spectrum, and waterfall visualizations
+- **PyQt6** - Desktop graphical user interface and live simulation controls
+- **unittest** - Automated testing and validation
+- **Git & GitHub** - Version control and project management
 
 
 ## Current Features
@@ -37,92 +39,94 @@ Generates synthetic sinusoidal signals with configurable frequencies, amplitudes
 
 Uses the Fast Fourier Transform (FFT) to convert time-domain signals into frequency-domain representations and identify frequency components.
 
+### 3. Noise Simulation & SNR Analysis
 
-## Example Results
+Adds simulated noise to generated signals and estimates the signal-to-noise ratio (SNR).
 
-The following results were obtained using synthetic signals with an
-expected frequency of 10 Hz and an interfering component at 30 Hz.
+### 4. Interference Detection
 
-| Noise Level | Estimated Noise Floor | Adaptive Threshold | Detected Frequencies |
-|---|---|---|---|
-| 0.3 | 0.0154 | 0.0772 | 10 Hz, 30 Hz |
-| 1.5 | 0.0772 | 0.3862 | 10 Hz, 30 Hz |
-| 3.0 | 0.1545 | 0.7725 | 10 Hz, 30 Hz |
+Detects significant frequency peaks using an adaptive threshold and classifies them as expected signals or potential interference.
 
-The detector identified both components in these three experiments.
-Further testing is needed to evaluate detection reliability,
-false positives, and false negatives.
+### 5. Desktop Graphical User Interface
+
+Provides an interactive PyQt6 dashboard with time-domain, FFT spectrum, waterfall, and analysis results displays.
+
+### 6. Live Simulation Mode
+
+Continuously generates simulated signal data and updates the visualizations and analysis results in real time.
+
+### 7. Testing & Evaluation
+
+Includes automated unit tests and manual GUI validation to verify signal processing, interference detection, and application functionality.
 
 
 ## Project Structure
 
 ```text
 RF-Sense/
-├── src/
-│   ├── signal_generator.py
-│   ├── spectrum_analyzer.py
-│   ├── noise_simulator.py
-│   └── interference_detector.py
-├── tests/
-├── docs/
-├── README.md
-├── requirements.txt
-└── .gitignore
+|-- gui/
+|   `-- main.py
+|-- src/
+|   |-- signal_generator.py
+|   |-- noise_simulator.py
+|   |-- spectrum_analyzer.py
+|   |-- interference_detector.py
+|   `-- evaluation.py
+|-- tests/
+|   |-- test_evaluation.py
+|   `-- test_interference_detector.py
+|-- docs/
+|-- README.md
+|-- requirements.txt
+`-- .gitignore
 ```
 
+### Getting Started
 
-## Getting Started
 
-Clone the repository and navigate to the project directory.
+### Installation
 
-Create a virtual environment:
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/francessola/RF-Sense.git
+   cd RF-Sense
+   ```
+
+2. Create a virtual environment:
+
+   ```bash
+   python -m venv .venv
+   ```
+
+3. Activate the virtual environment (Windows PowerShell):
+
+   ```powershell
+   .\.venv\Scripts\Activate.ps1
+   ```
+
+4. Install the required dependencies:
+
+   ```bash
+   python -m pip install -r requirements.txt
+   ```
+
+### Running the Application
+
+Launch the RF-Sense desktop GUI from the project root:
 
 ```bash
-python -m venv .venv
+python gui/main.py
 ```
 
-Activate the environment on Windows PowerShell:
+The application provides interactive signal analysis, interference detection, and live simulation capabilities using synthetic signals.
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
+### Running Tests
 
-Install the dependencies:
+Run the automated unit tests:
 
 ```bash
-pip install -r requirements.txt
-```
-
-Run the current simulation and detection workflow:
-
-```bash
-python src/noise_simulator.py
+python -m unittest discover -s tests -v
 ```
 
 
-## Development Roadmap
-
-- [x] Phase 1 - Project Setup
-- [x] Phase 2 - Signal Generation & FFT
-- [x] Phase 3 - Noise & SNR Analysis
-- [x] Phase 4 - Interference Detection
-- [ ] Phase 5 - Testing & Evaluation
-- [ ] Phase 6 - PyQt6 Graphical User Interface
-- [ ] Phase 7 - System Integration
-- [ ] Phase 8 - Final Documentation & GitHub Release
-
-
-## Future Improvements
-
-Planned improvements include automated testing, quantitative detection
-metrics, additional interference scenarios, and an interactive PyQt6
-graphical user interface.
-
-
-## Project Status
-
-**In Development - Phase 5: Testing & Evaluation**
-
-RF-Sense is an educational engineering project using synthetic signals.
-It is intended to demonstrate signal-processing and software-development
-concepts, rather than operate as a validated real-world RF monitoring system.
