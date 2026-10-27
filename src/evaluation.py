@@ -9,7 +9,6 @@ def calculate_precision(tp, fp):
 
     return precision
 
-print(calculate_precision(18,6))
 
 
 def calculate_recall(tp, fn):
@@ -22,7 +21,6 @@ def calculate_recall(tp, fn):
 
     return recall
 
-print(calculate_recall(32,8))
 
 
 def calculate_f1_score(tp, fp, fn):
@@ -36,4 +34,7 @@ def calculate_f1_score(tp, fp, fn):
 
     return f1_score
 
-print(calculate_f1_score(18, 6, 12))
+if __name__ == "__main__":
+    print(calculate_precision(18,6))
+    print(calculate_recall(32,8))
+    print(calculate_f1_score(18,6,12))

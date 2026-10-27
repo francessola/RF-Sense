@@ -1,101 +1,110 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import rfft, rfftfreq
-from interference_detector import detect_peaks, classify_frequency
 #  scipy.signal import find_peaks
 
-# Signal parameters
-sample_rate = 1000
-duration = 1.0
-frequency = 10
-amplitude = 1.0
+def generate_noise(noise_level, num_samples, rng):
+    # Generate Gaussian noise
+    noise = noise_level * rng.normal(0, 1, num_samples)
 
-# Generate time values 
-time = np.arange(0, duration, 1 / sample_rate)
+    return noise
 
-# Generate clean signal
-clean_signal = amplitude * np.sin(2 * np.pi * frequency * time)
+if __name__ == "__main__":
 
-# Generate random noise
-rng = np.random.default_rng(42)
-noise = 0.3 * rng.normal(0, 1, len(time))
+    from src.interference_detector import detect_peaks, classify_frequency
 
-# Generate synthetic interference
-interference_frequency = 30
-interference_amplitude = 0.8
+    # Signal parameters
+    sample_rate = 1000
+    duration = 1.0
+    frequency = 10
+    amplitude = 1.0
 
-interference = interference_amplitude * np.sin(2 * np.pi * interference_frequency * time)
+    # Generate time values 
+    time = np.arange(0, duration, 1 / sample_rate)
 
-# Combine original signal, interference, and noise
-noisy_signal = clean_signal + interference + noise
+    # Generate clean signal
+    clean_signal = amplitude * np.sin(2 * np.pi * frequency * time)
 
-# Calculate signal and noise power
-signal_power = np.mean(clean_signal ** 2)
-noise_power = np.mean(noise ** 2)
+    # Generate random noise
+    rng = np.random.default_rng(42)
+    noise = 0.3 * rng.normal(0, 1, len(time))
 
-# Calculate Signal-to-Noise Ratio
-snr = 10 * np.log10(signal_power / noise_power)
+    # Generate synthetic interference
+    interference_frequency = 30
+    interference_amplitude = 0.8
 
-print(f"Signal power: {signal_power:.4f}")
-print(f"Noise power: {noise_power:.4f}")
-print(f"SNR: {snr:.2f} dB")
+    interference = interference_amplitude * np.sin(2 * np.pi * interference_frequency * time)
 
-# Plot both signals
-plt.figure(figsize=(10,6))
-plt.plot(time, clean_signal, label="Clean Signal", color="blue")
-plt.plot(time, noisy_signal, label="Noisy Signal", color="red", alpha=0.7)
+    # Combine original signal, interference, and noise
+    noisy_signal = clean_signal + interference + noise
 
-plt.title("RF-Sense | Clean vs Noisy Signal")
-plt.xlabel("Time (seconds)")
-plt.ylabel("Amplitude")
-plt.legend()
-plt.grid(True)
+    # Calculate signal and noise power
+    signal_power = np.mean(clean_signal ** 2)
+    noise_power = np.mean(noise ** 2)
 
-# Calculate FFT of noisy signal
-fft_values = rfft(noisy_signal)
-frequencies = rfftfreq(len(noisy_signal), 1 /sample_rate)
+    # Calculate Signal-to-Noise Ratio
+    snr = 10 * np.log10(signal_power / noise_power)
 
-# Calculate amplitude spectrum
-amplitudes = 2 * np.abs(fft_values) / len(noisy_signal)
+    print(f"Signal power: {signal_power:.4f}")
+    print(f"Noise power: {noise_power:.4f}")
+    print(f"SNR: {snr:.2f} dB")
 
-# Estimate the noise floor
-noise_floor = np.median(amplitudes[1:])
+    # Plot both signals
+    plt.figure(figsize=(10,6))
+    plt.plot(time, clean_signal, label="Clean Signal", color="blue")
+    plt.plot(time, noisy_signal, label="Noisy Signal", color="red", alpha=0.7)
 
-# Calculate adaptive threshold
-threshold_multiplier = 5
-threshold = threshold_multiplier * noise_floor
+    plt.title("RF-Sense | Clean vs Noisy Signal")
+    plt.xlabel("Time (seconds)")
+    plt.ylabel("Amplitude")
+    plt.legend()
+    plt.grid(True)
 
-print(f"\nEstimated Noise Floor: {noise_floor:.4f}")
-print(f"Adaptive Threshold: {threshold:.4f}")
+    # Calculate FFT of noisy signal
+    fft_values = rfft(noisy_signal)
+    frequencies = rfftfreq(len(noisy_signal), 1 /sample_rate)
 
-peaks = detect_peaks(amplitudes, threshold)
+    # Calculate amplitude spectrum
+    amplitudes = 2 * np.abs(fft_values) / len(noisy_signal)
 
-# Display detected frequencies
-print("\nDetected Frequency Peaks: ")
+    # Estimate the noise floor
+    noise_floor = np.median(amplitudes[1:])
 
-for peak in peaks:
-    print(f"Frequency: {frequencies[peak]:.2f} Hz | Amplitude: {amplitudes[peak]:.4f}")
+    # Calculate adaptive threshold
+    threshold_multiplier = 5
+    threshold = threshold_multiplier * noise_floor
 
-# Expected signal frequency
-expected_frequency = 10
-tolerance = 1.0
+    print(f"\nEstimated Noise Floor: {noise_floor:.4f}")
+    print(f"Adaptive Threshold: {threshold:.4f}")
 
-print("\nSignal Classification: ")
+    peaks = detect_peaks(amplitudes, threshold)
 
-for peak in peaks:
-    detected_frequency = frequencies[peak]
+    # Display detected frequencies
+    print("\nDetected Frequency Peaks: ")
 
-    classification = classify_frequency(detected_frequency, expected_frequency, tolerance)
-    print(f"{detected_frequency:.2f} Hz | {classification}")
+    for peak in peaks:
+        print(f"Frequency: {frequencies[peak]:.2f} Hz | Amplitude: {amplitudes[peak]:.4f}")
 
-# Plot frequency spectrum
-plt.figure(figsize=(10,6))
-plt.plot(frequencies, amplitudes, color="purple")
+    # Expected signal frequency
+    expected_frequency = 10
+    tolerance = 1.0
 
-plt.title("RF-Sense | Noisy Signal Spectrum")
-plt.xlabel("Frequency (Hz)")
-plt.ylabel("Amplitude")
-plt.xlim(0, 60)
-plt.grid(True)
+    print("\nSignal Classification: ")
 
-plt.show()
+    for peak in peaks:
+        detected_frequency = frequencies[peak]
+
+        classification = classify_frequency(detected_frequency, expected_frequency, tolerance)
+        print(f"{detected_frequency:.2f} Hz | {classification}")
+
+    # Plot frequency spectrum
+    plt.figure(figsize=(10,6))
+    plt.plot(frequencies, amplitudes, color="purple")
+
+    plt.title("RF-Sense | Noisy Signal Spectrum")
+    plt.xlabel("Frequency (Hz)")
+    plt.ylabel("Amplitude")
+    plt.xlim(0, 60)
+    plt.grid(True)
+
+    plt.show()

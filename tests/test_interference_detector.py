@@ -2,13 +2,16 @@ import unittest
 import sys
 from pathlib import Path
 import numpy as np
-from interference_detector import detect_peaks, classify_frequency
-from evaluation import (calculate_precision, calculate_recall, calculate_f1_score)
 from scipy.fft import rfft, rfftfreq
 
+# Add src folder to Python's import path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from interference_detector import detect_peaks
+# Import detector functions
+from interference_detector import detect_peaks, classify_frequency
+
+# Import evaluation functions
+from evaluation import (calculate_precision, calculate_recall, calculate_f1_score)
 
 class TestInterferenceDetector(unittest.TestCase):
 
