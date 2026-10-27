@@ -59,6 +59,12 @@ Continuously generates simulated signal data and updates the visualizations and 
 
 Includes automated unit tests and manual GUI validation to verify signal processing, interference detection, and application functionality.
 
+## Application Preview 
+
+The RF-Sense desktop application provides an interactive dashboard for simulated RF signal analysis and interference detection.
+
+![RF-Sense Dashboard](docs/screenshots/rf-sense-dashboard.png)
+
 
 ## Project Structure
 
